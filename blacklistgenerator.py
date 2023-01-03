@@ -48,7 +48,7 @@ def getips(config, mincount):
 
         newitems = []
         for item in newitemdict:
-            if newitemdict[item] > 5:
+            if newitemdict[item] > 3:
                 tempitem = {
                     "srcip": item,
                     "count": newitemdict[item]
