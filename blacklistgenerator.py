@@ -42,10 +42,10 @@ def getips(config, mincount):
             count = 0
             if srcip in newitemdict:
                 count = newitemdict[srcip]
-
             newitemdict[item["srcip"]["S"]] = count + itemcount
 
-
+        dynamodb = boto3.resource("dynamodb", region_name=config["awsregion"])
+        tableobj = dynamodb.Table(table)
         newitems = []
         for item in newitemdict:
             if newitemdict[item] > 3:
@@ -53,6 +53,15 @@ def getips(config, mincount):
                     "srcip": item,
                     "count": newitemdict[item]
                 }
+                for entry in itemdict:
+                    if entry["srcip"]['S'] == item:
+                        index = entry["FortiLogID"]["S"]
+                        response = tableobj.get_item(Key={'FortiLogID': index}, TableName=table)
+                        object = response["Item"]
+                        object["status"] = "Banned"
+                        response = tableobj.put_item(TableName=table, Item=object)
+                        print(f'Updated entry for {index} to Banned')
+
                 newitems.append(tempitem)
         return newitems
 
