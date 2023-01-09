@@ -48,7 +48,7 @@ def getips(config, mincount):
         tableobj = dynamodb.Table(table)
         newitems = []
         for item in newitemdict:
-            if newitemdict[item] > 3:
+            if newitemdict[item] > 2:
                 tempitem = {
                     "srcip": item,
                     "count": newitemdict[item]
