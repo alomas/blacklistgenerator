@@ -61,8 +61,17 @@ def getips(config, mincount):
                         object["status"] = "Banned"
                         response = tableobj.put_item(TableName=table, Item=object)
                         print(f'Updated entry for {index} to Banned')
-
                 newitems.append(tempitem)
+            else:
+                totalcount = newitemdict[item]
+                for entry in itemdict:
+                    if entry["srcip"]['S'] == item:
+                        index = entry["FortiLogID"]["S"]
+                        response = tableobj.get_item(Key={'FortiLogID': index}, TableName=table)
+                        object = response["Item"]
+                        object["total"] = totalcount
+                        response = tableobj.put_item(TableName=table, Item=object)
+                        print(f'Updated total for {index} to {totalcount}')
         return newitems
 
     except ClientError as e:
