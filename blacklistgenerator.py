@@ -68,7 +68,10 @@ def getips(config, mincount):
                     if entry["srcip"]['S'] == item:
                         index = entry["FortiLogID"]["S"]
                         response = tableobj.get_item(Key={'FortiLogID': index}, TableName=table)
-                        object = response["Item"]
+                        if "Item" in response:
+                            object = response["Item"]
+                        else:
+                            print(response)
                         object["total"] = totalcount
                         response = tableobj.put_item(TableName=table, Item=object)
                         print(f'Updated total for {index} to {totalcount}')
